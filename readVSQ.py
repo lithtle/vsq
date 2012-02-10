@@ -58,7 +58,10 @@ class VSQ:
             out = open(fname, "w")
         except IOError:
             print "invalid filename" >> sys.stderr
-        data = getBinary(self.vsq)
+        header = unparseHeader(self.header)
+        masterTrack = unparseMasterTrack(self.masterTrack)
+        generalTracks = unparseGeneralTracks(self.generalTracks)
+        data = header + masterTrack + generalTracks
         out.write(data)
         out.close()
 
@@ -144,8 +147,15 @@ class VSQ:
             ret.append(Track(self.vsq))
         return ret
 
-    def getBinary(self):
-        # まだ
+    # ここからアンパース関数群
+    def unparseHeader(self, header):
+        ret = ""
+        pass
+
+    def unparseMaster(self, masterTrack):
+        pass
+
+    def unparseGeneralTrack(self, generalTracks):
         pass
 
 class Track:
@@ -222,7 +232,7 @@ class Track:
         section = ""
 
         d = re.compile("DM:\d{4}:").sub("", dataStr).split("\n")
-        d.pop()                 # 最後の改行要素を削除 => [...., ''←これ]
+        d.pop()                 # 最後の改行要素を削除
 
         for i in d:
             if re.compile("\[.+\]").match(i):
@@ -267,6 +277,7 @@ class Event:
         return p_str(self.data)
 
     def info(self):
+        """情報の表示"""
         p(self.data)
 
     def set(self, k, v):
@@ -284,6 +295,7 @@ class Handle:
         return p_str(self.data)
 
     def info(self):
+        """情報の表示"""
         p(self.data)
 
     def set(self, k, v):
